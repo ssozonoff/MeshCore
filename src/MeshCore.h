@@ -38,6 +38,7 @@ namespace mesh {
 
 #define  BD_STARTUP_NORMAL     0  // getStartupReason() codes
 #define  BD_STARTUP_RX_PACKET  1
+#define  BD_STARTUP_RTC_WAKEUP 2
 
 class MainBoard {
 public:
@@ -51,6 +52,7 @@ public:
   virtual void setGpio(uint32_t values) {}
   virtual uint8_t getStartupReason() const = 0;
   virtual bool startOTAUpdate(const char* id, char reply[]) { return false; }   // not supported
+  virtual void enterLowPowerSleep(uint32_t seconds) { /* no op */ }
 };
 
 /**
