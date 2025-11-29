@@ -47,6 +47,11 @@ struct NodePrefs { // persisted to file
   uint32_t gps_interval; // in seconds
   uint8_t advert_loc_policy;
   uint32_t discovery_mod_timestamp;
+  // Transport code zone configuration
+  char broadcast_zone_name[32];  // Zone name for transport code filtering (empty = disabled)
+  // Sleeping sensor configuration
+  uint16_t sleep_interval_secs;  // Sleep interval between sensor readings (default 300 = 5 mins)
+  uint8_t wakeups_per_advert;    // Number of wakeups between advertisements (default 12)
 };
 
 class CommonCLICallbacks {
