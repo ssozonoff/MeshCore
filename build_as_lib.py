@@ -61,4 +61,34 @@ for item in menv.get("CPPDEFINES", []):
         
 menv.Replace(SRC_FILTER=src_filter)
 
+# Add ed25519 library to build
+# This is needed when MeshCore is used as a dependency in other projects
+import os
+from os.path import join
+
+# Get the library root directory
+lib_root = menv.get("PROJECT_LIBDEPS_DIR")
+if lib_root and "MeshCore" in str(lib_root):
+    # When built as a dependency, find the MeshCore directory
+    meshcore_dir = str(lib_root).rsplit("/libdeps/", 1)[0] + "/libdeps/" + str(lib_root).split("/libdeps/")[1].split("/")[0] + "/MeshCore"
+else:
+    # When built standalone (use relative path from this script)
+    meshcore_dir = realpath(".")
+
+ed25519_dir = join(meshcore_dir, "lib", "ed25519")
+nrf52_include_dir = join(meshcore_dir, "lib", "nrf52", "include")
+
+# Add ed25519 to include path
+menv.Append(CPPPATH=[ed25519_dir])
+
+# Add nrf52 includes if NRF52_PLATFORM is defined
+for item in menv.get("CPPDEFINES", []):
+    if item == "NRF52_PLATFORM":
+        menv.Append(CPPPATH=[nrf52_include_dir])
+        break
+
+# Build ed25519 C files
+if os.path.exists(ed25519_dir):
+    menv.BuildSources(join("$BUILD_DIR", "ed25519"), ed25519_dir, src_filter="+<*.c>")
+
 #print (menv.Dump())
